@@ -5,6 +5,9 @@ import ssl
 import sys
 from pathlib import Path
 
+# import aiohttp_cors
+from aiohttp_middlewares import cors_middleware
+
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPServiceUnavailable
 from aiortc import RTCSessionDescription, RTCPeerConnection
@@ -91,6 +94,15 @@ if __name__ == '__main__':
         ssl_context = None
 
     app = web.Application()
+
+    app = web.Application(
+        middlewares=[
+            cors_middleware(origins=["http://localhost:3000"])
+        ]
+    )
+    
+    # cors = aiohttp_cors.setup(app)
+
     app.router.add_get('/', index)
     app.router.add_post('/offer', offer)
     app.router.add_static('/static/', path=ROOT / 'static', name='static')
